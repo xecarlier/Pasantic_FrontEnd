@@ -56,7 +56,7 @@ class _FormularioLoginState extends State<FormularioLogin> {
               controller: widget.contrasenaController,
               isContrasena: true,
               label: "Contraseña",
-              validacion: Validator.validateContrasena,
+              validacion: Validator.validatePassword,
             ),
           ),
           SizedBox(height: getProportionateScreenHeight(20)),
@@ -76,7 +76,7 @@ class _FormularioLoginState extends State<FormularioLogin> {
                     logIn(context),
                     AutoRouter.of(context).push(HomeRoute())
                   },
-                  label: "Inicia Sesion",
+                  label: "Inicia Sesión",
                   colorFondo: loading ? kDisableColor : kPrimaryColor,
                 ),
               ),
