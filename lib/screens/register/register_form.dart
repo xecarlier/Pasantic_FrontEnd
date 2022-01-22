@@ -1,3 +1,5 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sampleproject/constants.dart';
 import 'package:sampleproject/defaults/default_button.dart';
@@ -8,7 +10,6 @@ import 'package:sampleproject/validator.dart';
 class RegisterForm extends StatefulWidget {
   TextEditingController nameController;
   TextEditingController lastnameController;
-  TextEditingController userController;
   TextEditingController cedulaController;
   TextEditingController mailController;
   TextEditingController passwordController;
@@ -17,13 +18,12 @@ class RegisterForm extends StatefulWidget {
   TextEditingController uniController;
   TextEditingController carrerController;
   TextEditingController cityController;
-  TextEditingController adressController;
+  TextEditingController addresController;
   GlobalKey<FormState> formKey;
 
   RegisterForm(
       {required this.nameController,
       required this.lastnameController,
-      required this.userController,
       required this.cedulaController,
       required this.mailController,
       required this.passwordController,
@@ -32,7 +32,7 @@ class RegisterForm extends StatefulWidget {
       required this.uniController,
       required this.carrerController,
       required this.cityController,
-      required this.adressController,
+      required this.addresController,
       required this.formKey});
 
   @override
@@ -40,12 +40,19 @@ class RegisterForm extends StatefulWidget {
 }
 
 class _RegisterFormState extends State<RegisterForm> {
-DateTime? _bornDate;
+  int userId = -9;
+  DateTime? _bornDate;
 
   bool validateForm() {
-    if (Validator.validateUsername(widget.userController.text) == null &&
-        Validator.validateCedula(widget.cedulaController.text) == null &&
+    if (Validator.validateCedula(widget.cedulaController.text) == null &&
         Validator.validateMail(widget.mailController.text) == null &&
+        Validator.validateNombreLargo(widget.nameController.text) == null &&
+        Validator.validateNombreLargo(widget.lastnameController.text) == null &&
+        Validator.validateNombreLargo(widget.phoneController.text) == null &&
+        Validator.validateNombreLargo(widget.uniController.text) == null &&
+        Validator.validateNombreLargo(widget.carrerController.text) == null &&
+        Validator.validateNombreLargo(widget.cityController.text) == null &&
+        Validator.validateNombreLargo(widget.addresController.text) == null &&
         Validator.validatePassword(widget.passwordController.text) ==
             null &&
         widget.passwordConfirmController.text
@@ -105,17 +112,6 @@ DateTime? _bornDate;
             isContrasena: false,
             validacion: Validator.validateMail,
             label: "Correo Electrónico",
-          ),
-        ),
-        SizedBox(height: getProportionateScreenHeight(25)),
-        Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(50)),
-          child: DefaultInput(
-            controller: widget.userController,
-            isContrasena: false,
-            validacion: Validator.validateUsername,
-            label: "Nombre de Usuario",
           ),
         ),
         SizedBox(height: getProportionateScreenHeight(25)),
@@ -205,7 +201,7 @@ DateTime? _bornDate;
           padding:
               EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(50)),
           child: DefaultInput(
-            controller: widget.adressController,
+            controller: widget.addresController,
             isContrasena: false,
             validacion: Validator.validateNombreLargo,
             label: "Dirección",
@@ -241,14 +237,20 @@ DateTime? _bornDate;
           padding:
               EdgeInsets.symmetric(vertical: getProportionateScreenHeight(60)),
           child: DefaultButton(
-            func: () => {
+            func: () async => {
               if (validateForm())
                 {
                   debugPrint(
-                      '''${widget.nameController.text} ${widget.lastnameController.text} ${widget.userController.text} 
+                      '''${widget.nameController.text} ${widget.lastnameController.text} 
                       ${widget.cedulaController.text} ${widget.mailController.text} ${widget.passwordController.text} 
                       ${widget.passwordConfirmController.text} ${widget.phoneController.text} ${widget.uniController.text} 
-                      ${widget.carrerController.text} ${widget.cityController.text} ${widget.adressController.text} ${this.getDateText()}''')
+                      ${widget.carrerController.text} ${widget.cityController.text} ${widget.addresController.text} ${this.getDateText()}'''),
+                  await register(),
+                  if(userId != -9){
+                    AutoRouter.of(context).pop()
+                  }else{
+                    {showErrorSnack(context, 'Error al registrar usuario')}
+                  }
                 }
               else
                 {showErrorSnack(context, 'Los datos ingresados no son válidos')}
@@ -278,7 +280,32 @@ DateTime? _bornDate;
     if (_bornDate == null) {
       return 'Fecha de Nacimiento';
     } else {
-      return '${_bornDate!.month}-${_bornDate!.day}-${_bornDate!.year}';
+      return '${_bornDate!.year}-${_bornDate!.month}-${_bornDate!.day}';
+    }
+  }
+
+  Future<void> register() async {
+    try {
+      final Response response = await dioConst.post('$kUrl/user/intern/',
+        data: {
+          'card_id':widget.cedulaController.text,
+          'born_date':this.getDateText(),
+          'first_name':widget.nameController.text,
+          'address':widget.addresController.text,
+          'active':true,
+          'city':widget.cityController.text,
+          'cellphone':widget.phoneController.text,
+          'institution':widget.uniController.text,
+          'study_field':widget.carrerController.text,
+          'email':widget.mailController.text,
+          'password':widget.passwordController.text,
+          'last_name':widget.lastnameController.text
+        });
+      setState(() {
+        userId = response.data['id'] as int;
+      });
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 }

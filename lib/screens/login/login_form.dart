@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sampleproject/constants.dart';
 import 'package:sampleproject/defaults/default_button.dart';
@@ -6,27 +7,24 @@ import 'package:sampleproject/defaults/default_input.dart';
 import 'package:sampleproject/defaults/default_loading.dart';
 import 'package:sampleproject/routes/router.gr.dart';
 import 'package:sampleproject/size_data.dart';
+import 'package:sampleproject/user_storage.dart';
 import 'package:sampleproject/validator.dart';
 
 class FormularioLogin extends StatefulWidget {
-  TextEditingController usuarioController;
-  TextEditingController contrasenaController;
-  Function recuerdameCallback;
-  bool recuerdame;
+  TextEditingController usernameController;
+  TextEditingController passwordController;
   GlobalKey<FormState> formKey;
   FormularioLogin(
-      {required this.usuarioController,
-      required this.contrasenaController,
-      required this.recuerdame,
-      required this.formKey,
-      required this.recuerdameCallback});
+      {required this.usernameController,
+      required this.passwordController,
+      required this.formKey});
 
   @override
   _FormularioLoginState createState() => _FormularioLoginState();
 }
 
 class _FormularioLoginState extends State<FormularioLogin> {
-  bool recuerdame = false;
+  int userId = -9;
   bool loading = false;
   @override
   Widget build(BuildContext context) {
@@ -40,7 +38,7 @@ class _FormularioLoginState extends State<FormularioLogin> {
                 padding: EdgeInsets.symmetric(
                     horizontal: getProportionateScreenWidth(50)),
                 child: DefaultInput(
-                  controller: widget.usuarioController,
+                  controller: widget.usernameController,
                   isContrasena: false,
                   label: "Usuario",
                   validacion: Validator.validateUsername,
@@ -53,14 +51,12 @@ class _FormularioLoginState extends State<FormularioLogin> {
             padding: EdgeInsets.symmetric(
                 horizontal: getProportionateScreenWidth(50)),
             child: DefaultInput(
-              controller: widget.contrasenaController,
+              controller: widget.passwordController,
               isContrasena: true,
               label: "Contraseña",
               validacion: Validator.validatePassword,
             ),
           ),
-          SizedBox(height: getProportionateScreenHeight(20)),
-          _recuerdame(),
           SizedBox(height: getProportionateScreenHeight(50),),
           SizedBox(
         height: getProportionateScreenHeight(270),
@@ -72,9 +68,14 @@ class _FormularioLoginState extends State<FormularioLogin> {
                 height: getProportionateScreenHeight(60),
                 width: getProportionateScreenWidth(250),
                 child: DefaultButton(
-                  func: () => {
-                    logIn(context),
-                    AutoRouter.of(context).push(HomeRoute())
+                  func: () async => {
+                    await logIn(context),
+                    setState(() {
+                      loading = false;
+                    }),
+                    if(userId!=-9){
+                      AutoRouter.of(context).push(HomeRoute())
+                    }
                   },
                   label: "Inicia Sesión",
                   colorFondo: loading ? kDisableColor : kPrimaryColor,
@@ -101,23 +102,22 @@ class _FormularioLoginState extends State<FormularioLogin> {
     setState(() {
       loading = true;
     });
-    await Future.delayed(const Duration(seconds: 3));
-    //TODO: Añadir comunicación por api
-    setState(() {
-      loading = false;
-    });
+    try {
+      final Response response = await dioConst.post('$kUrl/user/login/',
+        data: {
+          'username':widget.usernameController.text,
+          'password':widget.passwordController.text
+        });
+      setState(() {
+        userId = response.data['intern'] as int;
+      });
+      UserSecureStorage.setUserId(userId);
+      UserSecureStorage.setToken(response.data['token'] as String);
+      debugPrint(userId.toString());
+    } catch (e) {
+      debugPrint(e.toString());
+    } 
   }
 
-  Widget _recuerdame() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Checkbox(
-            value: widget.recuerdame,
-            activeColor: kPrimaryColor,
-            onChanged: widget.recuerdameCallback as void Function(bool?)?),
-        const Text("Recuerdame")
-      ],
-    );
-  }
+  
 }

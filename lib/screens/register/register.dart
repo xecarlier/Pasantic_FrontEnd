@@ -12,7 +12,6 @@ class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final lastnameController = TextEditingController();
-  final userController = TextEditingController();
   final cedulaController = TextEditingController();
   final mailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -21,7 +20,7 @@ class _RegisterState extends State<Register> {
   final uniController = TextEditingController();
   final carrerController = TextEditingController();
   final cityController = TextEditingController();
-  final adressController = TextEditingController();
+  final addresController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +38,6 @@ class _RegisterState extends State<Register> {
                 child: RegisterForm(
                   nameController: nameController,
                   lastnameController: lastnameController,
-                  userController: userController,
                   cedulaController: cedulaController,
                   mailController: mailController,
                   passwordController: passwordController,
@@ -48,7 +46,7 @@ class _RegisterState extends State<Register> {
                   uniController: uniController,
                   carrerController: carrerController,
                   cityController: cityController,
-                  adressController: adressController,
+                  addresController: addresController,
                   formKey: _formKey,
                 )),
           ],

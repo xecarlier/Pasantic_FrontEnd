@@ -12,8 +12,8 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
-  final usuarioController = TextEditingController();
-  final contrasenaController = TextEditingController();
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
   bool recuerdame = false;
   bool loading = false;
 
@@ -49,31 +49,12 @@ class _LoginState extends State<Login> {
       SizedBox(height: getProportionateScreenHeight(50),),
       SizedBox(
         child: FormularioLogin(
-          usuarioController: usuarioController,
-          contrasenaController: contrasenaController,
-          recuerdame: recuerdame,
+          usernameController: usernameController,
+          passwordController: passwordController,
           formKey: _formKey,
-          recuerdameCallback: recuerdameCallback,
         ),
         height: getProportionateScreenHeight(730),
       ),
     ];
-  }
-
-  Future<void> logIn(BuildContext context) async {
-    setState(() {
-      loading = true;
-    });
-    await Future.delayed(const Duration(seconds: 3));
-    //TODO: Añadir comunicación por api
-    setState(() {
-      loading = false;
-    });
-  }
-
-  void recuerdameCallback(bool? selected) {
-    setState(() {
-      recuerdame = selected!;
-    });
   }
 }

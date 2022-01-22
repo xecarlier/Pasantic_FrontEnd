@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 const kPrimaryColor = Color(0xFF152254);
@@ -12,3 +13,5 @@ const kPrimaryGradientColor = LinearGradient(
 );
 const kAnimationDuration = Duration(milliseconds: 200);
 const kAnimationMiliseconds = 500;
+const kUrl = "http://10.0.2.2:8000/api";
+final Dio dioConst= Dio();
