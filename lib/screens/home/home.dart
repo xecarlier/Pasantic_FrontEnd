@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sampleproject/constants.dart';
 import 'package:sampleproject/defaults/default_button.dart';
+import 'package:sampleproject/screens/menu/menu.dart';
 import 'package:sampleproject/user_storage.dart';
 
 class Home extends StatefulWidget {
@@ -12,6 +14,14 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int id = 0;
   String tok = '';
+  int current = 0;
+  final List<Widget> _screens = [
+    //const BuzonHome(), ¿Hay que remover buzon?
+    InternshipList(),
+    Text('postulaciones'),
+    Text('amigos'),
+    Text('perfil'),
+  ];
 
   @override
   void initState() {
@@ -32,11 +42,38 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(children: [
-        Text(id.toString()),
-        Text(tok)
-      ],),
+      body: _screens[current],
+      bottomNavigationBar: _navigationBar(),
     );
+  }
+
+  Widget _navigationBar() {
+    return BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: kPrimaryColor,
+        showUnselectedLabels: true,
+        currentIndex: current,
+        onTap: _navigationHandler,
+        items: const [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home), label: 'Menú'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.assignment_outlined), label: 'Postulaciones'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.people_alt), label: 'Amigos'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person), label: 'Perfil'),
+        ]);
+  }
+
+  void _navigationHandler(int newCurrent) {
+    if(newCurrent==3){
+      //TODO: ir a perfil de usuario
+    }else{
+      setState(() {
+        current = newCurrent;
+      });
+    }
   }
 
 }
