@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sampleproject/constants.dart';
 import 'package:sampleproject/defaults/default_button.dart';
+import 'package:sampleproject/screens/friends/friend_list.dart';
 import 'package:sampleproject/screens/menu/menu.dart';
 import 'package:sampleproject/user_storage.dart';
 
@@ -19,7 +20,7 @@ class _HomeState extends State<Home> {
     //const BuzonHome(), ¿Hay que remover buzon?
     InternshipList(),
     Text('postulaciones'),
-    Text('amigos'),
+    FriendList(),
     Text('perfil'),
   ];
 
