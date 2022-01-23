@@ -3,12 +3,12 @@ import 'package:sampleproject/size_data.dart';
 
 class DefaultInput extends StatelessWidget {
   final TextEditingController controller;
-  final Function validacion;
+  final Function? validacion;
   final bool isContrasena;
   final String label;
   const DefaultInput(
       {required this.controller,
-      required this.validacion,
+       this.validacion,
       required this.isContrasena,
       required this.label});
 

@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sampleproject/constants.dart';
+import 'package:sampleproject/defaults/default_input.dart';
 import 'package:sampleproject/defaults/default_loading.dart';
 import 'package:sampleproject/screens/menu/internship_card.dart';
 import 'package:sampleproject/screens/menu/internship_model.dart';
+import 'package:sampleproject/size_data.dart';
 
 class InternshipList extends StatefulWidget {
   const InternshipList({ Key? key }) : super(key: key);
@@ -14,7 +16,9 @@ class InternshipList extends StatefulWidget {
 
 class _InternshipListState extends State<InternshipList> {
   bool loading = true;
+  TextEditingController searchController = new TextEditingController();
   List<Internship> internships = [];
+  List<Widget> contenido = [];
 
   
  
@@ -33,7 +37,40 @@ class _InternshipListState extends State<InternshipList> {
             SliverFillRemaining(
               hasScrollBody: false,
               child: Column(
-                children: buildList(),
+                children: [
+                  SizedBox(height: getProportionateScreenHeight(40),),
+                  Row(
+                   mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: getProportionateScreenHeight(40),
+                        width: getProportionateScreenWidth(210),
+                        child: DefaultInput(controller: searchController, isContrasena: false, label: 'Buscar...')),
+                      TextButton.icon(
+                        onPressed: buildList, 
+                        icon: Icon(Icons.search, color: kDisableColor,), 
+                        label: Text(''))
+                    ],
+                  ),
+                  SizedBox(height: getProportionateScreenHeight(10),),
+                  SizedBox(
+                    width: getProportionateScreenWidth(290),
+                    child: Container(
+                      child: Text(
+                        'Resultados',
+                        textScaleFactor: 1.2,
+                        style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor),
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: Colors.grey.shade300),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: getProportionateScreenHeight(10),),
+                  Column(children: contenido,)
+                ],
               )
             )
           ]
@@ -74,21 +111,37 @@ class _InternshipListState extends State<InternshipList> {
       setState(() {
         loading = false;
       });
+      buildList();
     } catch (e) {
       debugPrint(e.toString());
     }
   }
 
-  List<Widget> buildList() {
+  void buildList() {
     List<Widget> res = [];
+    setState(() {
+      contenido = [];
+    });
+    debugPrint(searchController.text);
     for (var internship in internships){
-      res.add(InternshipCard(
-        id: internship.id!, 
-        name: internship.name!, 
-        durationMonths: internship.durationMonths!, 
-        ownerName: internship.ownerName!)
-      );
+      if(searchController.text == ''){
+        res.add(InternshipCard(
+          id: internship.id!, 
+          name: internship.name!, 
+          durationMonths: internship.durationMonths!, 
+          ownerName: internship.ownerName!)
+        );
+      }else if(internship.name!.toLowerCase().contains(searchController.text.toLowerCase())){
+        res.add(InternshipCard(
+          id: internship.id!, 
+          name: internship.name!, 
+          durationMonths: internship.durationMonths!, 
+          ownerName: internship.ownerName!)
+        );
+      }
     }
-    return res;
+    setState(() {
+      contenido = res;
+    });
   }
 }

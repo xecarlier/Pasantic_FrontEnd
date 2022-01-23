@@ -44,9 +44,9 @@ class _InternshipCardState extends State<InternshipCard> {
               SizedBox(height: getProportionateScreenHeight(10),),
               Text(
                 widget.ownerName,
-                textScaleFactor: 1.2,
+                textScaleFactor: 1.1,
               ),
-              SizedBox(height: getProportionateScreenHeight(20),),
+              SizedBox(height: getProportionateScreenHeight(15),),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -59,9 +59,12 @@ class _InternshipCardState extends State<InternshipCard> {
                   ),
                   Row(
                     children: [
-                      Text('Detalles'),
+                      Text('Detalles', textScaleFactor: 1.2,),
                       SizedBox(width: getProportionateScreenWidth(5),),
-                      Icon(Icons.arrow_forward_ios),
+                      TextButton.icon(onPressed: () =>{
+                        debugPrint('detalle ${widget.id}')
+                        //TODO: navegar al detalle de la pasantía
+                      }, icon: Icon(Icons.arrow_forward_ios, color: kDisableColor,), label: Text(''),)
                     ],
                   )
                 ],
