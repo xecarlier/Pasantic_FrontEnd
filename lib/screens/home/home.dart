@@ -3,6 +3,7 @@ import 'package:sampleproject/constants.dart';
 import 'package:sampleproject/defaults/default_button.dart';
 import 'package:sampleproject/screens/friends/friend_list.dart';
 import 'package:sampleproject/screens/menu/menu.dart';
+import 'package:sampleproject/screens/postulation/postulation.dart';
 import 'package:sampleproject/user_storage.dart';
 
 class Home extends StatefulWidget {
@@ -19,7 +20,7 @@ class _HomeState extends State<Home> {
   final List<Widget> _screens = [
     //const BuzonHome(), ¿Hay que remover buzon?
     InternshipList(),
-    Text('postulaciones'),
+    PostulationList(),
     FriendList(),
     Text('perfil'),
   ];
@@ -30,7 +31,7 @@ class _HomeState extends State<Home> {
     init();
   }
 
-  Future init() async{
+  Future init() async {
     final idl = await UserSecureStorage.getUserId();
     final tokl = await UserSecureStorage.getToken();
 
@@ -56,25 +57,22 @@ class _HomeState extends State<Home> {
         currentIndex: current,
         onTap: _navigationHandler,
         items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home), label: 'Menú'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Menú'),
           BottomNavigationBarItem(
               icon: Icon(Icons.assignment_outlined), label: 'Postulaciones'),
           BottomNavigationBarItem(
               icon: Icon(Icons.people_alt), label: 'Amigos'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person), label: 'Perfil'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         ]);
   }
 
   void _navigationHandler(int newCurrent) {
-    if(newCurrent==3){
+    if (newCurrent == 3) {
       //TODO: ir a perfil de usuario
-    }else{
+    } else {
       setState(() {
         current = newCurrent;
       });
     }
   }
-
 }
