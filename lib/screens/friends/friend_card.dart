@@ -5,10 +5,12 @@ import 'package:sampleproject/size_data.dart';
 class FriendCard extends StatefulWidget {
   int id;
   String name;
+  Function? deleteFunc;
 
   FriendCard(
       {required this.id,
-      required this.name});
+      required this.name,
+      this.deleteFunc});
 
   @override
   _FriendCardState createState() => _FriendCardState();
@@ -42,8 +44,8 @@ class _FriendCardState extends State<FriendCard> {
                     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey.shade700),
                   ),
                   IconButton(onPressed: () =>{
-                        debugPrint('detalle ${widget.id}')
-                        //TODO: navegar al detalle de la pasantía
+                        debugPrint('detalle ${widget.id}'),
+                        widget.deleteFunc!(widget.id)
                       }, icon: Icon(Icons.cancel, color: kDangerColor,))
                 ],
               ),

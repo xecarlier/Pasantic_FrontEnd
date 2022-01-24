@@ -5,8 +5,8 @@ class Internship{
   String? name;
   String? description;
   String? typeOfWorkDay;
-  List<String>? requirements;
-  List<String>? challenges;
+  List<dynamic>? requirements;
+  List<dynamic>? challenges;
   String? profile;
   int? durationMonths;
   String? remuneration;
