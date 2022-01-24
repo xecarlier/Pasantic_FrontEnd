@@ -68,7 +68,9 @@ class _PostulationListState extends State<PostulationList> {
   Future<void> getPostulations() async {
     dynamic next = -1;
     var usrId = await UserSecureStorage.getUserId();
-    postulations = [];
+    setState(() {
+      postulations = [];
+    });
     try {
       while (next != null) {
         final Response response = await dioConst.get(

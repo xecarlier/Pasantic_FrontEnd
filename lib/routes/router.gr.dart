@@ -8,6 +8,7 @@ import 'package:auto_route/auto_route.dart' as _i1;
 
 import '../screens/home/home.dart' as _i4;
 import '../screens/login/login.dart' as _i2;
+import '../screens/menu/internship_detail.dart' as _i5;
 import '../screens/register/register.dart' as _i3;
 
 class AppRouter extends _i1.RootStackRouter {
@@ -23,6 +24,12 @@ class AppRouter extends _i1.RootStackRouter {
     },
     HomeRoute.name: (entry) {
       return _i1.MaterialPageX(entry: entry, child: const _i4.Home());
+    },
+    InternshipDetailRoute.name: (entry) {
+      var args = entry.routeData.argsAs<InternshipDetailRouteArgs>(
+          orElse: () => InternshipDetailRouteArgs());
+      return _i1.MaterialPageX(
+          entry: entry, child: _i5.InternshipDetail(id: args.id));
     }
   };
 
@@ -30,7 +37,8 @@ class AppRouter extends _i1.RootStackRouter {
   List<_i1.RouteConfig> get routes => [
         _i1.RouteConfig(LoginRoute.name, path: '/'),
         _i1.RouteConfig(RegisterRoute.name, path: '/register'),
-        _i1.RouteConfig(HomeRoute.name, path: '/home')
+        _i1.RouteConfig(HomeRoute.name, path: '/home'),
+        _i1.RouteConfig(InternshipDetailRoute.name, path: '/internship')
       ];
 }
 
@@ -50,4 +58,19 @@ class HomeRoute extends _i1.PageRouteInfo {
   const HomeRoute() : super(name, path: '/home');
 
   static const String name = 'HomeRoute';
+}
+
+class InternshipDetailRoute
+    extends _i1.PageRouteInfo<InternshipDetailRouteArgs> {
+  InternshipDetailRoute({int? id})
+      : super(name,
+            path: '/internship', args: InternshipDetailRouteArgs(id: id));
+
+  static const String name = 'InternshipDetailRoute';
+}
+
+class InternshipDetailRouteArgs {
+  const InternshipDetailRouteArgs({this.id});
+
+  final int? id;
 }
