@@ -94,6 +94,9 @@ class _PostulationCardState extends State<PostulationCard> {
                         },
                         style: ElevatedButton.styleFrom(
                           primary: Colors.redAccent,
+                          shape: new RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(10.0),
+                          ),
                         ),
                       ),
                     ],
