@@ -25,11 +25,8 @@ class Internship{
     this.profile,
     this.durationMonths,
     this.remuneration,
-    this.ownerEnterprise
+    this.ownerEnterprise,
+    this.ownerName
   });
-
-  void setOwnerName(){
-    ownerName = 'Netflix';
-  }
 
 }

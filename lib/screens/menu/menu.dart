@@ -101,10 +101,9 @@ class _InternshipListState extends State<InternshipList> {
             endDate: res['end_date'],
             durationMonths: res['duration_months'],
             remuneration: res['remuneration'],
-            ownerEnterprise: res['owner_enterprise']
+            ownerEnterprise: res['owner_enterprise'],
+            ownerName: res['enterprise']
           );
-
-          internship.setOwnerName();
           internships.add(internship);
         }
       }
