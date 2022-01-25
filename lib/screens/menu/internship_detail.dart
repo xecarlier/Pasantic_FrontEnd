@@ -4,6 +4,7 @@ import 'package:sampleproject/constants.dart';
 import 'package:sampleproject/screens/menu/internship_model.dart';
 import 'package:sampleproject/defaults/default_loading.dart';
 import 'package:sampleproject/size_data.dart';
+import 'package:sampleproject/user_storage.dart';
 
 class InternshipDetail extends StatefulWidget {
   int? id;
@@ -17,6 +18,7 @@ class InternshipDetail extends StatefulWidget {
 class _InternshipDetailState extends State<InternshipDetail> {
   bool loading = true;
   late Internship internship;
+  bool applied = false;
 
   String parseList(List<String> lista) {
     return lista.join("\n \n");
@@ -34,8 +36,10 @@ class _InternshipDetailState extends State<InternshipDetail> {
         ? Scaffold(
             appBar: AppBar(
               centerTitle: true,
-              title: Text('${internship.name}',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              title: Text(
+                '${internship.name}',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               backgroundColor: kPrimaryColor,
             ),
             body: SizedBox(
@@ -197,9 +201,11 @@ class _InternshipDetailState extends State<InternshipDetail> {
                                         'Aplicar',
                                         textScaleFactor: 1.4,
                                       ),
-                                      onPressed: () {
-                                        //TODO: request post para postulacion
-                                      },
+                                      onPressed: applied
+                                          ? null
+                                          : () {
+                                              applyInternship();
+                                            },
                                       style: ElevatedButton.styleFrom(
                                         primary: kPrimaryColor,
                                         shape: new RoundedRectangleBorder(
@@ -231,6 +237,7 @@ class _InternshipDetailState extends State<InternshipDetail> {
 
   Future<void> getInternship() async {
     try {
+      var usrId = await UserSecureStorage.getUserId();
       final Response res = await dioConst.get('$kUrl/internship/${widget.id}/');
       debugPrint(res.data.toString());
       internship = Internship(
@@ -256,7 +263,52 @@ class _InternshipDetailState extends State<InternshipDetail> {
           ownerName: res.data['enterprise']);
       setState(() {
         loading = false;
+        applied = res.data['postulants'].contains(usrId) ? true : false;
       });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> applyInternship() async {
+    setState(() {
+      loading = true;
+    });
+    try {
+      var usrId = await UserSecureStorage.getUserId();
+      final Response res = await dioConst.post('$kUrl/postulation/',
+          data: {'internship': widget.id, 'postulant': usrId});
+      setState(() {
+        loading = false;
+      });
+      bool condition = res.statusCode == 201;
+      String msg =
+          condition ? 'Postulación generada con éxito' : 'Algo salió mal.';
+      applied = condition ? true : false;
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Aplicación confirmada'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(msg),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     } catch (e) {
       debugPrint(e.toString());
     }
