@@ -4,6 +4,7 @@ import 'package:sampleproject/defaults/default_button.dart';
 import 'package:sampleproject/screens/friends/friend_list.dart';
 import 'package:sampleproject/screens/menu/menu.dart';
 import 'package:sampleproject/screens/postulation/postulation.dart';
+import 'package:sampleproject/screens/profile/profile.dart';
 import 'package:sampleproject/user_storage.dart';
 
 class Home extends StatefulWidget {
@@ -18,11 +19,10 @@ class _HomeState extends State<Home> {
   String tok = '';
   int current = 0;
   final List<Widget> _screens = [
-    //const BuzonHome(), ¿Hay que remover buzon?
     InternshipList(),
     PostulationList(),
     FriendList(),
-    Text('perfil'),
+    Profile(),
   ];
 
   @override
@@ -67,12 +67,8 @@ class _HomeState extends State<Home> {
   }
 
   void _navigationHandler(int newCurrent) {
-    if (newCurrent == 3) {
-      //TODO: ir a perfil de usuario
-    } else {
-      setState(() {
-        current = newCurrent;
-      });
-    }
+    setState(() {
+      current = newCurrent;
+    });
   }
 }

@@ -1,4 +1,9 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:sampleproject/constants.dart';
+import 'package:sampleproject/screens/user/user_model.dart';
+import 'package:sampleproject/user_storage.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -8,28 +13,35 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  final name = "NOMBRE";
-  final phone = "0981827483";
-  final email = "correo@algo.com";
-  final institution = "ESPOL";
-  final id = "0802286678";
-  final carreer = "COMPUTACION";
-  final languages = ["p1", "p2"];
-  final certifications = ["p3", "p2"];
-  final references = ["prueba", "p2"];
+  User? userInfo;
+  String? name = "NOMBRE";
+  String? phone = "0981827483";
+  String? email = "correo@algo.com";
+  String? institution = "ESPOL";
+  String? id = "0802286678";
+  String? carreer = "COMPUTACION";
+  List<dynamic>? languages = ["p1", "p2"];
+  List<dynamic>? certifications = ["p3", "p2"];
+  List<dynamic>? references = ["prueba", "p2"];
   final alertController = new TextEditingController();
 
-  String parseList(List<String>? lista) {
+  String parseList(List<dynamic>? lista) {
     String result = "";
 
     for (var item in lista!) {
-      if (item == lista!.last) {
+      if (item == lista.last) {
         result += "$item";
       } else {
         result += "$item, ";
       }
     }
     return result;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUsrInfo();
   }
 
   @override
@@ -77,7 +89,7 @@ class _ProfileState extends State<Profile> {
                           textAlign: TextAlign.start,
                         ),
                         Text(
-                          name,
+                          name!,
                           style: const TextStyle(
                             fontSize: 20,
                           ),
@@ -92,7 +104,7 @@ class _ProfileState extends State<Profile> {
                           textAlign: TextAlign.left,
                         ),
                         Text(
-                          phone,
+                          phone!,
                           style: const TextStyle(
                             fontSize: 20.0,
                           ),
@@ -107,7 +119,7 @@ class _ProfileState extends State<Profile> {
                           textAlign: TextAlign.left,
                         ),
                         Text(
-                          email,
+                          email!,
                           style: const TextStyle(
                             fontSize: 20.0,
                           ),
@@ -122,7 +134,7 @@ class _ProfileState extends State<Profile> {
                           textAlign: TextAlign.left,
                         ),
                         Text(
-                          institution,
+                          institution!,
                           style: const TextStyle(
                             fontSize: 20.0,
                           ),
@@ -137,7 +149,7 @@ class _ProfileState extends State<Profile> {
                           textAlign: TextAlign.left,
                         ),
                         Text(
-                          id,
+                          id!,
                           style: const TextStyle(
                             fontSize: 20.0,
                           ),
@@ -152,7 +164,7 @@ class _ProfileState extends State<Profile> {
                           textAlign: TextAlign.left,
                         ),
                         Text(
-                          carreer,
+                          carreer!,
                           style: const TextStyle(
                             fontSize: 20.0,
                           ),
@@ -268,21 +280,83 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  Future<void> getUsrInfo() async {
+    var usrId = await UserSecureStorage.getUserId();
+    try {
+      final Response resUserData = await dioConst.get('$kUrl/user/intern/$usrId/', 
+                                    );
+      setState(() {
+          userInfo = User(
+          id: resUserData.data['id'],
+          cardId: resUserData.data['card_id'],
+          city: resUserData.data['city'],
+          bornDate: resUserData.data['born_date'],
+          address: resUserData.data['address'],
+          bio: resUserData.data['bio'],
+          institution: resUserData.data['institution'],
+          studyField: resUserData.data['study_field'],
+          certifications: resUserData.data['certifications'],
+          languages: resUserData.data['languages'],
+          references: resUserData.data['references'],
+          friends: resUserData.data['friends'],
+          user: resUserData.data['user'],
+          firstName: resUserData.data['user_data']['first_name'],
+          lastName: resUserData.data['user_data']['last_name'],
+          email: resUserData.data['user_data']['email'],
+          username: resUserData.data['user_data']['username'],
+          cellphone: resUserData.data['cellphone']
+        );
+      });
+      debugPrint(resUserData.data.toString());
+      setState(() {
+        name = '${userInfo!.firstName} ${userInfo!.lastName}';
+        phone = userInfo!.cellphone;
+        email = userInfo!.email;
+        institution = userInfo!.institution;
+        carreer = userInfo!.studyField;
+        id = userInfo!.cardId;
+        if(userInfo!.languages != null){
+          languages = userInfo!.languages;
+        }else{
+          languages = [];
+        }
+        if(userInfo!.certifications != null){
+          certifications = userInfo!.certifications;
+        }else{
+          certifications = [];
+        }
+        if(userInfo!.references != null){
+          references = userInfo!.references;
+        }else{
+          references = [];
+        }
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   showAlertDialog(BuildContext context, var entrada) {
     // set up the buttons
-    Widget cancelButton = FlatButton(
-      child: Text("Cancel"),
-      onPressed: () {
-        alertController.text = "";
-        Navigator.of(context).pop();
-      },
-    );
-    Widget continueButton = FlatButton(
+    Widget continueButton = TextButton(
       child: Text("Continue"),
       onPressed: () {
         debugPrint(alertController.text);
-        Navigator.of(context).pop();
-
+        var list = alertController.text.split(',');
+        if(entrada == 'Idiomas'){
+          setState(() {
+            userInfo!.languages = list;
+          });
+        }else if(entrada == 'Certificaciones'){
+          setState(() {
+            userInfo!.certifications = list;
+          });
+        }else if(entrada == 'Referencias'){
+          setState(() {
+            userInfo!.references = list;
+          });
+        }
+        updateField();
       },
     );
     // set up the AlertDialog
@@ -290,7 +364,6 @@ class _ProfileState extends State<Profile> {
       title: Text("Ingrese $entrada: "),
       content: TextFormField(controller: alertController),
       actions: [
-        cancelButton,
         continueButton,
       ],
     );
@@ -301,5 +374,35 @@ class _ProfileState extends State<Profile> {
         return alert;
       },
     );
+  }
+
+  Future<void> updateField() async {
+    debugPrint(userInfo.toString());
+    debugPrint('$kUrl/user/intern/${userInfo!.id!}/');
+    try {
+      final Response response = await dioConst.put('$kUrl/user/intern/${userInfo!.id}/',
+        data: {
+          'card_id': userInfo!.cardId,
+          'born_date':userInfo!.bornDate,
+          'first_name':userInfo!.firstName,
+          'address':userInfo!.address!,
+          'active':true,
+          'city':userInfo!.city,
+          'cellphone':userInfo!.cellphone,
+          'institution':userInfo!.institution,
+          'study_field':userInfo!.studyField,
+          'email':userInfo!.email,
+          'last_name':userInfo!.lastName,
+          'user':userInfo!.user,
+          'certifications':userInfo!.certifications,
+          'languages':userInfo!.languages,
+          'references':userInfo!.references
+        });
+        await getUsrInfo();
+    } catch (e) {
+      
+      debugPrint(e.toString());
+    }
+    
   }
 }
