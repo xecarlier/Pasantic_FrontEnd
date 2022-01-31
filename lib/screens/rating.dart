@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:sampleproject/constants.dart';
@@ -15,6 +16,7 @@ class RatingForm extends StatefulWidget {
 }
 
 class _RatingFormState extends State<RatingForm> {
+  int? reviewId;
   var rating = 3;
   TextEditingController commentCtrl = TextEditingController();
 
@@ -64,7 +66,12 @@ class _RatingFormState extends State<RatingForm> {
                     ),
                   ),
                   SizedBox(height: getProportionateScreenHeight(75),),
-                  DefaultButton(label: 'Publicar', func: ()=>{}, colorFondo: kPrimaryColor,),
+                  DefaultButton(label: 'Publicar', func: () async{
+                    await postReview();
+                    if(this.reviewId!=null){
+                      AutoRouter.of(context).pop();
+                    }
+                  }, colorFondo: kPrimaryColor,),
                   SizedBox(height: getProportionateScreenHeight(25),),
                   DefaultButton(label: 'Ignorar', func: ()=>{AutoRouter.of(context).pop()}, colorFondo: kDangerColor),
                 ],
@@ -76,4 +83,22 @@ class _RatingFormState extends State<RatingForm> {
     );
   }
 
+  Future<void> postReview() async {
+    try {
+      final Response response = await dioConst.post('$kUrl/organization/review/',
+        data: {
+          'description':this.commentCtrl.text,
+          'rating':this.rating,
+          'owner_enterprise':widget.ownerId,
+          'reviewer':widget.reviewer,
+          'active':true,
+        });
+      debugPrint(response.data.toString());
+      setState(() {
+        reviewId = response.data['id'] as int;
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 }
