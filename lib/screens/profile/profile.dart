@@ -22,7 +22,7 @@ class _ProfileState extends State<Profile> {
   String? carreer = "COMPUTACION";
   List<dynamic>? languages = ["p1", "p2"];
   List<dynamic>? certifications = ["p3", "p2"];
-  List<dynamic>? references = ["prueba", "p2"];
+  List<dynamic>? references = [["prueba", "p2"]];
   final alertController = new TextEditingController();
 
   String parseList(List<dynamic>? lista) {
@@ -34,6 +34,25 @@ class _ProfileState extends State<Profile> {
       } else {
         result += "$item, ";
       }
+    }
+    return result;
+  }
+
+  String parseRefList(List<dynamic>? lista) {
+    String result = "";
+
+    for (var items in lista!) {
+      for(var item in items){
+        if (item == items.last) {
+          result += "$item";
+        } else {
+          result += "$item, ";
+        }
+      }
+      if (items != lista.last) {
+        result += "; ";
+      }
+      
     }
     return result;
   }
@@ -175,23 +194,25 @@ class _ProfileState extends State<Profile> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Idiomas:",
-                                  style: const TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.w700),
-                                  textAlign: TextAlign.left,
-                                ),
-                                Text(
-                                  parseList(languages),
-                                  style: const TextStyle(
-                                    fontSize: 20.0,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Idiomas:",
+                                    style: const TextStyle(
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.w700),
+                                    textAlign: TextAlign.left,
                                   ),
-                                ),
-                              ],
+                                  Text(
+                                    parseList(languages),
+                                    style: const TextStyle(
+                                      fontSize: 20.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             IconButton(
                               icon: const Icon(Icons.edit),
@@ -208,23 +229,25 @@ class _ProfileState extends State<Profile> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Certificaciones:",
-                                  style: const TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.w700),
-                                  textAlign: TextAlign.left,
-                                ),
-                                Text(
-                                  parseList(certifications),
-                                  style: const TextStyle(
-                                    fontSize: 20.0,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Certificaciones:",
+                                    style: const TextStyle(
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.w700),
+                                    textAlign: TextAlign.left,
                                   ),
-                                ),
-                              ],
+                                  Text(
+                                    parseList(certifications),
+                                    style: const TextStyle(
+                                      fontSize: 20.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             IconButton(
                               icon: const Icon(Icons.edit),
@@ -241,23 +264,26 @@ class _ProfileState extends State<Profile> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Referencias:",
-                                  style: const TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.w700),
-                                  textAlign: TextAlign.left,
-                                ),
-                                Text(
-                                  parseList(references),
-                                  style: const TextStyle(
-                                    fontSize: 20.0,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Referencias:",
+                                    style: const TextStyle(
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.w700),
+                                    textAlign: TextAlign.left,
                                   ),
-                                ),
-                              ],
+                                  Text(
+                                    parseRefList(references),
+                                    style: const TextStyle(
+                                      
+                                      fontSize: 20.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             IconButton(
                               icon: const Icon(Icons.edit),
@@ -342,20 +368,26 @@ class _ProfileState extends State<Profile> {
       child: Text("Continue"),
       onPressed: () {
         debugPrint(alertController.text);
-        var list = alertController.text.split(',');
         if(entrada == 'Idiomas'){
+          var list = alertController.text.split(',');
           setState(() {
             userInfo!.languages = list;
           });
         }else if(entrada == 'Certificaciones'){
+          var list = alertController.text.split(',');
           setState(() {
             userInfo!.certifications = list;
           });
         }else if(entrada == 'Referencias'){
-          setState(() {
-            userInfo!.references = list;
-          });
+          var items = alertController.text.split(';');
+          for(var item in items){
+            var list = item.split(',');
+            setState(() {
+              userInfo!.references!.add(list);
+            });
+          }
         }
+        alertController.text = '';
         updateField();
       },
     );
@@ -394,9 +426,9 @@ class _ProfileState extends State<Profile> {
           'email':userInfo!.email,
           'last_name':userInfo!.lastName,
           'user':userInfo!.user,
-          'certifications':userInfo!.certifications,
-          'languages':userInfo!.languages,
-          'references':userInfo!.references
+          'certifications':(userInfo!.certifications==null)? []:userInfo!.certifications,
+          'languages':(userInfo!.languages==null)? []:userInfo!.languages,
+          'references':(userInfo!.references==null)? []:userInfo!.references,
         });
         await getUsrInfo();
     } catch (e) {

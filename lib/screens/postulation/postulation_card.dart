@@ -1,6 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sampleproject/constants.dart';
+import 'package:sampleproject/routes/router.gr.dart';
 import 'package:sampleproject/size_data.dart';
 
 class PostulationCard extends StatefulWidget {
@@ -35,7 +37,6 @@ class _PostulationCardState extends State<PostulationCard> {
         borderRadius: BorderRadius.circular(15.0),
       ),
       child: SizedBox(
-        height: getProportionateScreenHeight(145),
         width: getProportionateScreenWidth(290),
         child: Padding(
           padding: const EdgeInsets.all(10.0),

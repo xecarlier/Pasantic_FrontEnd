@@ -1,6 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sampleproject/constants.dart';
+import 'package:sampleproject/routes/router.gr.dart';
 import 'package:sampleproject/screens/menu/internship_model.dart';
 import 'package:sampleproject/defaults/default_loading.dart';
 import 'package:sampleproject/size_data.dart';
@@ -69,6 +71,9 @@ class _InternshipDetailState extends State<InternshipDetail> {
                                 internship.ownerName!,
                                 textScaleFactor: 1.2,
                               ),
+                              IconButton(onPressed: ()=>{
+                                AutoRouter.of(context).push(EnterpriseRoute(id: internship.ownerEnterprise!))
+                              }, icon: Icon(Icons.arrow_forward_ios)),
                               SizedBox(
                                 height: getProportionateScreenHeight(25),
                               ),

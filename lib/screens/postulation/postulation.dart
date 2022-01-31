@@ -1,6 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sampleproject/constants.dart';
+import 'package:sampleproject/routes/router.gr.dart';
 import 'package:sampleproject/user_storage.dart';
 import 'package:sampleproject/defaults/default_loading.dart';
 import 'package:sampleproject/screens/postulation/postulation_card.dart';
@@ -132,6 +134,11 @@ class _PostulationListState extends State<PostulationList> {
         'state': state == 'En proceso' ? false : true,
       });
       await getPostulations();
+      final Response resInternshipData = await dioConst.get(
+          '$kUrl/internship/$internship',
+        );
+      debugPrint(resInternshipData.data.toString());
+      AutoRouter.of(context).push(RatingFormRoute(ownerId: resInternshipData.data['owner_enterprise'], reviewer: postulant));
     } catch (e) {
       debugPrint(e.toString());
     }

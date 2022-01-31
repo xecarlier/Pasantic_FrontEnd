@@ -5,10 +5,13 @@
 // **************************************************************************
 
 import 'package:auto_route/auto_route.dart' as _i1;
+import 'package:flutter/material.dart' as _i8;
 
+import '../screens/enterprise/enterprise.dart' as _i6;
 import '../screens/home/home.dart' as _i4;
 import '../screens/login/login.dart' as _i2;
 import '../screens/menu/internship_detail.dart' as _i5;
+import '../screens/rating.dart' as _i7;
 import '../screens/register/register.dart' as _i3;
 
 class AppRouter extends _i1.RootStackRouter {
@@ -30,6 +33,18 @@ class AppRouter extends _i1.RootStackRouter {
           orElse: () => InternshipDetailRouteArgs());
       return _i1.MaterialPageX(
           entry: entry, child: _i5.InternshipDetail(id: args.id));
+    },
+    EnterpriseRoute.name: (entry) {
+      var args = entry.routeData.argsAs<EnterpriseRouteArgs>();
+      return _i1.MaterialPageX(
+          entry: entry, child: _i6.Enterprise(id: args.id, key: args.key));
+    },
+    RatingFormRoute.name: (entry) {
+      var args = entry.routeData.argsAs<RatingFormRouteArgs>();
+      return _i1.MaterialPageX(
+          entry: entry,
+          child:
+              _i7.RatingForm(reviewer: args.reviewer, ownerId: args.ownerId));
     }
   };
 
@@ -38,7 +53,9 @@ class AppRouter extends _i1.RootStackRouter {
         _i1.RouteConfig(LoginRoute.name, path: '/'),
         _i1.RouteConfig(RegisterRoute.name, path: '/register'),
         _i1.RouteConfig(HomeRoute.name, path: '/home'),
-        _i1.RouteConfig(InternshipDetailRoute.name, path: '/internship')
+        _i1.RouteConfig(InternshipDetailRoute.name, path: '/internship'),
+        _i1.RouteConfig(EnterpriseRoute.name, path: '/internship/enterprise'),
+        _i1.RouteConfig(RatingFormRoute.name, path: '/review')
       ];
 }
 
@@ -73,4 +90,38 @@ class InternshipDetailRouteArgs {
   const InternshipDetailRouteArgs({this.id});
 
   final int? id;
+}
+
+class EnterpriseRoute extends _i1.PageRouteInfo<EnterpriseRouteArgs> {
+  EnterpriseRoute({required int id, _i8.Key? key})
+      : super(name,
+            path: '/internship/enterprise',
+            args: EnterpriseRouteArgs(id: id, key: key));
+
+  static const String name = 'EnterpriseRoute';
+}
+
+class EnterpriseRouteArgs {
+  const EnterpriseRouteArgs({required this.id, this.key});
+
+  final int id;
+
+  final _i8.Key? key;
+}
+
+class RatingFormRoute extends _i1.PageRouteInfo<RatingFormRouteArgs> {
+  RatingFormRoute({required int reviewer, required int ownerId})
+      : super(name,
+            path: '/review',
+            args: RatingFormRouteArgs(reviewer: reviewer, ownerId: ownerId));
+
+  static const String name = 'RatingFormRoute';
+}
+
+class RatingFormRouteArgs {
+  const RatingFormRouteArgs({required this.reviewer, required this.ownerId});
+
+  final int reviewer;
+
+  final int ownerId;
 }
