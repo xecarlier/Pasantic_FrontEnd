@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sampleproject/constants.dart';
 import 'package:sampleproject/screens/user/user_model.dart';
+import 'package:sampleproject/size_data.dart';
 import 'package:sampleproject/user_storage.dart';
 
 class Profile extends StatefulWidget {
@@ -22,7 +23,9 @@ class _ProfileState extends State<Profile> {
   String? carreer = "COMPUTACION";
   List<dynamic>? languages = ["p1", "p2"];
   List<dynamic>? certifications = ["p3", "p2"];
-  List<dynamic>? references = [["prueba", "p2"]];
+  List<dynamic>? references = [
+    ["prueba", "p2"]
+  ];
   final alertController = new TextEditingController();
 
   String parseList(List<dynamic>? lista) {
@@ -42,7 +45,7 @@ class _ProfileState extends State<Profile> {
     String result = "";
 
     for (var items in lista!) {
-      for(var item in items){
+      for (var item in items) {
         if (item == items.last) {
           result += "$item";
         } else {
@@ -52,7 +55,6 @@ class _ProfileState extends State<Profile> {
       if (items != lista.last) {
         result += "; ";
       }
-      
     }
     return result;
   }
@@ -73,27 +75,32 @@ class _ProfileState extends State<Profile> {
             SliverFillRemaining(
               hasScrollBody: false,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(
-                          top: 50.0,
-                        ),
-                        child: Text(
-                          "PERFIL",
-                          style: const TextStyle(
-                              fontSize: 30.0, fontWeight: FontWeight.w800),
-                          textAlign: TextAlign.center,
+                  SizedBox(
+                    height: getProportionateScreenHeight(40),
+                  ),
+                  SizedBox(
+                    width: getProportionateScreenWidth(290),
+                    child: Container(
+                      child: Text('Perfil',
+                          textScaleFactor: 2,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: kPrimaryColor),
+                          textAlign: TextAlign.center),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: Colors.grey.shade300),
                         ),
                       ),
-                    ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: getProportionateScreenHeight(10),
                   ),
                   Container(
                     margin: EdgeInsets.only(
-                      top: 45.0,
                       left: 40,
                       right: 40,
                     ),
@@ -278,7 +285,6 @@ class _ProfileState extends State<Profile> {
                                   Text(
                                     parseRefList(references),
                                     style: const TextStyle(
-                                      
                                       fontSize: 20.0,
                                     ),
                                   ),
@@ -309,29 +315,29 @@ class _ProfileState extends State<Profile> {
   Future<void> getUsrInfo() async {
     var usrId = await UserSecureStorage.getUserId();
     try {
-      final Response resUserData = await dioConst.get('$kUrl/user/intern/$usrId/', 
-                                    );
+      final Response resUserData = await dioConst.get(
+        '$kUrl/user/intern/$usrId/',
+      );
       setState(() {
-          userInfo = User(
-          id: resUserData.data['id'],
-          cardId: resUserData.data['card_id'],
-          city: resUserData.data['city'],
-          bornDate: resUserData.data['born_date'],
-          address: resUserData.data['address'],
-          bio: resUserData.data['bio'],
-          institution: resUserData.data['institution'],
-          studyField: resUserData.data['study_field'],
-          certifications: resUserData.data['certifications'],
-          languages: resUserData.data['languages'],
-          references: resUserData.data['references'],
-          friends: resUserData.data['friends'],
-          user: resUserData.data['user'],
-          firstName: resUserData.data['user_data']['first_name'],
-          lastName: resUserData.data['user_data']['last_name'],
-          email: resUserData.data['user_data']['email'],
-          username: resUserData.data['user_data']['username'],
-          cellphone: resUserData.data['cellphone']
-        );
+        userInfo = User(
+            id: resUserData.data['id'],
+            cardId: resUserData.data['card_id'],
+            city: resUserData.data['city'],
+            bornDate: resUserData.data['born_date'],
+            address: resUserData.data['address'],
+            bio: resUserData.data['bio'],
+            institution: resUserData.data['institution'],
+            studyField: resUserData.data['study_field'],
+            certifications: resUserData.data['certifications'],
+            languages: resUserData.data['languages'],
+            references: resUserData.data['references'],
+            friends: resUserData.data['friends'],
+            user: resUserData.data['user'],
+            firstName: resUserData.data['user_data']['first_name'],
+            lastName: resUserData.data['user_data']['last_name'],
+            email: resUserData.data['user_data']['email'],
+            username: resUserData.data['user_data']['username'],
+            cellphone: resUserData.data['cellphone']);
       });
       debugPrint(resUserData.data.toString());
       setState(() {
@@ -341,19 +347,19 @@ class _ProfileState extends State<Profile> {
         institution = userInfo!.institution;
         carreer = userInfo!.studyField;
         id = userInfo!.cardId;
-        if(userInfo!.languages != null){
+        if (userInfo!.languages != null) {
           languages = userInfo!.languages;
-        }else{
+        } else {
           languages = [];
         }
-        if(userInfo!.certifications != null){
+        if (userInfo!.certifications != null) {
           certifications = userInfo!.certifications;
-        }else{
+        } else {
           certifications = [];
         }
-        if(userInfo!.references != null){
+        if (userInfo!.references != null) {
           references = userInfo!.references;
-        }else{
+        } else {
           references = [];
         }
       });
@@ -368,19 +374,19 @@ class _ProfileState extends State<Profile> {
       child: Text("Continue"),
       onPressed: () {
         debugPrint(alertController.text);
-        if(entrada == 'Idiomas'){
+        if (entrada == 'Idiomas') {
           var list = alertController.text.split(',');
           setState(() {
             userInfo!.languages = list;
           });
-        }else if(entrada == 'Certificaciones'){
+        } else if (entrada == 'Certificaciones') {
           var list = alertController.text.split(',');
           setState(() {
             userInfo!.certifications = list;
           });
-        }else if(entrada == 'Referencias'){
+        } else if (entrada == 'Referencias') {
           var items = alertController.text.split(';');
-          for(var item in items){
+          for (var item in items) {
             var list = item.split(',');
             setState(() {
               userInfo!.references!.add(list);
@@ -412,29 +418,29 @@ class _ProfileState extends State<Profile> {
     debugPrint(userInfo.toString());
     debugPrint('$kUrl/user/intern/${userInfo!.id!}/');
     try {
-      final Response response = await dioConst.put('$kUrl/user/intern/${userInfo!.id}/',
-        data: {
-          'card_id': userInfo!.cardId,
-          'born_date':userInfo!.bornDate,
-          'first_name':userInfo!.firstName,
-          'address':userInfo!.address!,
-          'active':true,
-          'city':userInfo!.city,
-          'cellphone':userInfo!.cellphone,
-          'institution':userInfo!.institution,
-          'study_field':userInfo!.studyField,
-          'email':userInfo!.email,
-          'last_name':userInfo!.lastName,
-          'user':userInfo!.user,
-          'certifications':(userInfo!.certifications==null)? []:userInfo!.certifications,
-          'languages':(userInfo!.languages==null)? []:userInfo!.languages,
-          'references':(userInfo!.references==null)? []:userInfo!.references,
-        });
-        await getUsrInfo();
+      final Response response =
+          await dioConst.put('$kUrl/user/intern/${userInfo!.id}/', data: {
+        'card_id': userInfo!.cardId,
+        'born_date': userInfo!.bornDate,
+        'first_name': userInfo!.firstName,
+        'address': userInfo!.address!,
+        'active': true,
+        'city': userInfo!.city,
+        'cellphone': userInfo!.cellphone,
+        'institution': userInfo!.institution,
+        'study_field': userInfo!.studyField,
+        'email': userInfo!.email,
+        'last_name': userInfo!.lastName,
+        'user': userInfo!.user,
+        'certifications':
+            (userInfo!.certifications == null) ? [] : userInfo!.certifications,
+        'languages': (userInfo!.languages == null) ? [] : userInfo!.languages,
+        'references':
+            (userInfo!.references == null) ? [] : userInfo!.references,
+      });
+      await getUsrInfo();
     } catch (e) {
-      
       debugPrint(e.toString());
     }
-    
   }
 }

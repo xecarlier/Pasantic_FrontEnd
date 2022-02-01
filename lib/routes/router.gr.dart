@@ -5,9 +5,10 @@
 // **************************************************************************
 
 import 'package:auto_route/auto_route.dart' as _i1;
-import 'package:flutter/material.dart' as _i8;
+import 'package:flutter/material.dart' as _i9;
 
 import '../screens/enterprise/enterprise.dart' as _i6;
+import '../screens/friends/friend_profile.dart' as _i8;
 import '../screens/home/home.dart' as _i4;
 import '../screens/login/login.dart' as _i2;
 import '../screens/menu/internship_detail.dart' as _i5;
@@ -45,6 +46,12 @@ class AppRouter extends _i1.RootStackRouter {
           entry: entry,
           child:
               _i7.RatingForm(reviewer: args.reviewer, ownerId: args.ownerId));
+    },
+    FriendProfileRoute.name: (entry) {
+      var args = entry.routeData.argsAs<FriendProfileRouteArgs>(
+          orElse: () => FriendProfileRouteArgs());
+      return _i1.MaterialPageX(
+          entry: entry, child: _i8.FriendProfile(id: args.id));
     }
   };
 
@@ -55,7 +62,8 @@ class AppRouter extends _i1.RootStackRouter {
         _i1.RouteConfig(HomeRoute.name, path: '/home'),
         _i1.RouteConfig(InternshipDetailRoute.name, path: '/internship'),
         _i1.RouteConfig(EnterpriseRoute.name, path: '/internship/enterprise'),
-        _i1.RouteConfig(RatingFormRoute.name, path: '/review')
+        _i1.RouteConfig(RatingFormRoute.name, path: '/review'),
+        _i1.RouteConfig(FriendProfileRoute.name, path: '/friend')
       ];
 }
 
@@ -93,7 +101,7 @@ class InternshipDetailRouteArgs {
 }
 
 class EnterpriseRoute extends _i1.PageRouteInfo<EnterpriseRouteArgs> {
-  EnterpriseRoute({required int id, _i8.Key? key})
+  EnterpriseRoute({required int id, _i9.Key? key})
       : super(name,
             path: '/internship/enterprise',
             args: EnterpriseRouteArgs(id: id, key: key));
@@ -106,7 +114,7 @@ class EnterpriseRouteArgs {
 
   final int id;
 
-  final _i8.Key? key;
+  final _i9.Key? key;
 }
 
 class RatingFormRoute extends _i1.PageRouteInfo<RatingFormRouteArgs> {
@@ -124,4 +132,17 @@ class RatingFormRouteArgs {
   final int reviewer;
 
   final int ownerId;
+}
+
+class FriendProfileRoute extends _i1.PageRouteInfo<FriendProfileRouteArgs> {
+  FriendProfileRoute({int? id})
+      : super(name, path: '/friend', args: FriendProfileRouteArgs(id: id));
+
+  static const String name = 'FriendProfileRoute';
+}
+
+class FriendProfileRouteArgs {
+  const FriendProfileRouteArgs({this.id});
+
+  final int? id;
 }

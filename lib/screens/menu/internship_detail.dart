@@ -23,7 +23,7 @@ class _InternshipDetailState extends State<InternshipDetail> {
   bool applied = false;
 
   String parseList(List<String> lista) {
-    return lista.join("\n \n");
+    return lista.join("\n");
   }
 
   @override
@@ -53,7 +53,7 @@ class _InternshipDetailState extends State<InternshipDetail> {
                       children: <Widget>[
                         Container(
                           margin: EdgeInsets.only(
-                            top: 45.0,
+                            top: 30,
                             left: 40,
                             right: 40,
                           ),
@@ -67,15 +67,40 @@ class _InternshipDetailState extends State<InternshipDetail> {
                                     fontWeight: FontWeight.w700),
                                 textScaleFactor: 1.4,
                               ),
-                              Text(
-                                internship.ownerName!,
-                                textScaleFactor: 1.2,
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    internship.ownerName!,
+                                    textScaleFactor: 1.2,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'Sobre la compañía',
+                                        textScaleFactor: 1,
+                                        style: TextStyle(color: kDisableColor),
+                                      ),
+                                      SizedBox(
+                                        height:
+                                            getProportionateScreenHeight(30),
+                                        child: IconButton(
+                                          onPressed: () => {
+                                            AutoRouter.of(context).push(
+                                                EnterpriseRoute(
+                                                    id: internship
+                                                        .ownerEnterprise!))
+                                          },
+                                          icon: Icon(Icons.arrow_forward_ios),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                              IconButton(onPressed: ()=>{
-                                AutoRouter.of(context).push(EnterpriseRoute(id: internship.ownerEnterprise!))
-                              }, icon: Icon(Icons.arrow_forward_ios)),
                               SizedBox(
-                                height: getProportionateScreenHeight(25),
+                                height: getProportionateScreenHeight(15),
                               ),
                               Text(
                                 'Perfil: ',
