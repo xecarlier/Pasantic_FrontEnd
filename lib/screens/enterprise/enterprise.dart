@@ -51,7 +51,7 @@ class _EnterpriseState extends State<Enterprise> {
         centerTitle: true,
         title: Text(
           '$name',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: kPrimaryColor,
       ),

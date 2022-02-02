@@ -40,7 +40,7 @@ class _InternshipDetailState extends State<InternshipDetail> {
               centerTitle: true,
               title: Text(
                 '${internship.name}',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
               ),
               backgroundColor: kPrimaryColor,
             ),
