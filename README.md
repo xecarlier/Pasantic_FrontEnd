@@ -1,3 +1,6 @@
+#Pasantic
+Pasantic es una aplicación móvil que le permite a un usuario revisar y aplicar para pasantías de distintas empresas.
+
 # Instalación
 Para instalar las dependecias se ejecuta el siguiente comando:
 
